@@ -1,0 +1,17 @@
+# Do _NOT_ add any certificates
+certs/
+*.crt
+*.cert
+*.csr
+*.pem
+*.crt-bkp
+*.key
+# dont add symbolic links from sites-enabled
+sites-enabled/
+# symbolic link to nginx moduldir /usr/lib/nginx/modules
+modules
+# emacy backup files
+*~
+# dpkg foo
+*.dpkg-old
+*.old

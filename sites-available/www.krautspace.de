@@ -1,0 +1,25 @@
+server {
+	listen 0.0.0.0:80;
+	listen [2a01:4f8:151:51a3:176:9:184:3]:80;
+	server_name www.krautspace.de;
+
+	access_log /var/log/nginx/www.krautspace.de_access.log ano;
+	error_log /var/log/nginx/www.krautspace.de_error.log;
+
+	# weiterleiten
+	rewrite ^ https://$host$request_uri? permanent;
+}
+ 
+server {
+	listen 0.0.0.0:443 ssl;
+	listen [2a01:4f8:151:51a3:176:9:184:3]:443 ssl;
+	ssl_certificate /etc/ssl/private/star.krautspace.de.combined.crt;
+	ssl_certificate_key /etc/ssl/private/star.krautspace.de.key;
+	server_name www.krautspace.de;
+
+	# weiterleiten
+        rewrite ^ https://kraut.space$request_uri permanent;
+
+	add_header Public-Key-Pins 'pin-sha256="IwnHI5F3Ynnwa2dWAs48o8shoaHiqshUDT/CV+qankk="; max-age=1209600; includeSubDomains';
+
+}

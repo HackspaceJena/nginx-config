@@ -1,0 +1,11 @@
+server {
+	listen 0.0.0.0:80 default;
+	listen [2a01:4f8:151:51a3:176:9:184:3]:80 default;
+
+	access_log /var/log/nginx/access.log ano;
+	error_log /var/log/nginx/error.log warn;
+
+	location / {
+		return 404;
+	}
+}

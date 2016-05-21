@@ -1,0 +1,47 @@
+server {
+	listen 0.0.0.0:80;
+	listen 0.0.0.0:443 ssl;
+	listen [2a01:4f8:151:51a3:176:9:184:3]:80;
+	listen [2a01:4f8:151:51a3:176:9:184:3]:443 ssl;
+        ssl_certificate /etc/ssl/private/star.krautspace.de.combined.crt;
+        ssl_certificate_key /etc/ssl/private/star.krautspace.de.key;
+	server_name status.krautspace.de status.kraut.space;
+
+	access_log /var/log/nginx/status.krautspace.de_access.log ano;
+	error_log /var/log/nginx/status.krautspace.de_error.log;
+
+	root /var/www/status.hackspace-jena.de;
+	autoindex on;
+
+	# für alles das mit "/api" begint /api ausliefern und paar Heder setzen
+	location ^~ /api {
+		gzip_min_length 500; # hier mal senken damit kompremiert wird
+		default_type application/json;
+		add_header Cache-Control no-cache;
+		add_header Access-Control-Allow-Origin *;
+		try_files /api =404;
+	}
+
+	# für png Bilder in src und images Header setzen
+	location ^~ /images/ {
+		expires 30d;
+	}
+
+	# für /status/button/ revers-Proxy nutzen
+	location /status/button/ {
+		keepalive_timeout 0;
+		chunked_transfer_encoding off;
+		# leite Anfrage an router.krautspace.de (ro01) weiter
+		proxy_pass	http://ro01/status/;
+		proxy_connect_timeout	10s;
+		proxy_cache_valid	200	15s;
+		proxy_cache_valid	any	5s;
+		proxy_cache statusATro01;
+		proxy_ignore_client_abort on; # damit Cache aktualisiert wird
+	}
+
+	# jede sonstige Anfrage
+	location / {
+		try_files $uri $uri/ =404;
+	}
+}

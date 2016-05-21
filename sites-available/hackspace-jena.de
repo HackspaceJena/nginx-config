@@ -1,0 +1,15 @@
+server {
+	listen 0.0.0.0:80;
+	listen [2a01:4f8:151:51a3:176:9:184:3]:80;
+	listen 0.0.0.0:443 ssl;
+        listen [2a01:4f8:151:51a3:176:9:184:3]:443 ssl;
+        ssl_certificate /etc/nginx/certs/www.krautspace.de.crt;
+        ssl_certificate_key /etc/nginx/certs/www.krautspace.de.key;
+        server_name www.hackspace-jena.de hackspace-jena.de;
+
+        access_log /var/log/nginx/hackspace-jena.de_access.log ano;
+        error_log /var/log/nginx/hackspace-jena.de_error.log;
+
+	# weiterleiten
+        rewrite ^ https://www.krautspace.de$request_uri permanent;
+}
